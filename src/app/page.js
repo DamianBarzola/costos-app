@@ -1,80 +1,131 @@
 "use client";
-import { Navigator } from "@/components/Navigator.jsx";
-import { Box, MenuItem, TextField } from "@mui/material";
+import { Box, Button, MenuItem, TextField } from "@mui/material";
 import { ELEMENT_TYPES } from "@/consts";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useState } from "react";
+import { toast } from "sonner";
 
-let Data = [
-  {
-    id: 1,
-    label: "Tela",
-    type: ELEMENT_TYPES.SELECT,
-    amount: 1,
-    // price: null,
-    subtotal: null,
-    optionSelected: "",
-    options: [
-      { id: 1, label: "Tela 1", price: 500 },
-      { id: 2, label: "Tela 2", price: 500 },
-    ],
-  },
-  {
-    id: 2,
-    label: "Volado",
-    type: ELEMENT_TYPES.PRICE,
-    price: 0,
-    subtotal: null,
-  },
-  {
-    id: 3,
-    label: "Cinta",
-    type: ELEMENT_TYPES.PRICE,
-    price: 0,
-    subtotal: null,
-  },
-  {
-    id: 4,
-    label: "Etiqueta Eco",
-    type: ELEMENT_TYPES.QUANTITY,
-    price: 150,
-    amount: 1,
-    subtotal: null,
-  },
-  {
-    id: 5,
-    label: "Etiqueta",
-    type: ELEMENT_TYPES.QUANTITY,
-    price: 50,
-    amount: 1,
-    subtotal: null,
-  },
-  {
-    id: 6,
-    label: "Hilos",
-    type: ELEMENT_TYPES.PRICE,
-    price: 0,
-    subtotal: null,
-  },
-  {
-    id: 7,
-    label: "Mano de obra",
-    type: ELEMENT_TYPES.QUANTITY,
-    price: 1800,
-    amount: 1,
-    subtotal: null,
-  },
-  {
-    id: 8,
-    label: "Bolsa",
-    type: ELEMENT_TYPES.QUANTITY,
-    price: 50,
-    amount: 1,
-    subtotal: null,
-  },
-];
-
-let revenue = 50;
+// let DATA = [
+//   {
+//     id: 1,
+//     label: "Tela",
+//     type: ELEMENT_TYPES.SELECT,
+//     amount: 1,
+//     // price: null,
+//     subtotal: null,
+//     optionSelected: "",
+//     options: [
+//       { id: 1, label: "Tela 1", price: 500 },
+//       { id: 2, label: "Tela 2", price: 500 },
+//     ],
+//   },
+//   {
+//     id: 2,
+//     label: "Volado",
+//     type: ELEMENT_TYPES.PRICE,
+//     price: 0,
+//     subtotal: null,
+//   },
+//   {
+//     id: 3,
+//     label: "Cinta",
+//     type: ELEMENT_TYPES.PRICE,
+//     price: 0,
+//     subtotal: null,
+//   },
+//   {
+//     id: 4,
+//     label: "Etiqueta Eco",
+//     type: ELEMENT_TYPES.QUANTITY,
+//     price: 150,
+//     amount: 1,
+//     subtotal: null,
+//   },
+//   {
+//     id: 5,
+//     label: "Etiqueta",
+//     type: ELEMENT_TYPES.QUANTITY,
+//     price: 50,
+//     amount: 1,
+//     subtotal: null,
+//   },
+//   {
+//     id: 6,
+//     label: "Hilos",
+//     type: ELEMENT_TYPES.PRICE,
+//     price: 0,
+//     subtotal: null,
+//   },
+//   {
+//     id: 7,
+//     label: "Mano de obra",
+//     type: ELEMENT_TYPES.QUANTITY,
+//     price: 1800,
+//     amount: 1,
+//     subtotal: null,
+//   },
+//   {
+//     id: 8,
+//     label: "Bolsa",
+//     type: ELEMENT_TYPES.QUANTITY,
+//     price: 50,
+//     amount: 1,
+//     subtotal: null,
+//   },
+// ];
+let DATA = {
+  revenue: 50,
+  items: [
+    {
+      id: 1,
+      label: "Tela",
+      type: ELEMENT_TYPES.SELECT,
+      options: [
+        { id: 1, label: "Tela 1", price: 500 },
+        { id: 2, label: "Tela 2", price: 500 },
+      ],
+    },
+    {
+      id: 2,
+      label: "Volado",
+      type: ELEMENT_TYPES.PRICE,
+    },
+    {
+      id: 3,
+      label: "Cinta",
+      type: ELEMENT_TYPES.PRICE,
+    },
+    {
+      id: 4,
+      label: "Etiqueta Eco",
+      type: ELEMENT_TYPES.QUANTITY,
+      price: 150,
+    },
+    {
+      id: 5,
+      label: "Etiqueta",
+      type: ELEMENT_TYPES.QUANTITY,
+      price: 50,
+    },
+    {
+      id: 6,
+      label: "Hilos",
+      type: ELEMENT_TYPES.PRICE,
+    },
+    {
+      id: 7,
+      label: "Mano de obra",
+      type: ELEMENT_TYPES.QUANTITY,
+      price: 1800,
+    },
+    {
+      id: 8,
+      label: "Bolsa",
+      type: ELEMENT_TYPES.QUANTITY,
+      price: 50,
+    },
+  ],
+};
 
 function RowField({ rowData, handleSelect, handleChange }) {
   return (
@@ -87,7 +138,7 @@ function RowField({ rowData, handleSelect, handleChange }) {
               variant="outlined"
               fullWidth
               label={rowData.label}
-              value={rowData.optionSelected.id ?? ""}
+              value={rowData.optionSelected?.id ?? ""}
               onChange={handleSelect}
             >
               <MenuItem value="" disabled>
@@ -133,23 +184,29 @@ function RowField({ rowData, handleSelect, handleChange }) {
           )
         )}
       </div>
-      <div className="w-1/5 flex justify-center items-center">
-        <span>{rowData.subtotal ? "$ " + rowData.subtotal : "-"}</span>
+      <div className="w-1/5 flex justify-end pe-2 items-center">
+        <span>{"$ " + rowData.subtotal}</span>
       </div>
     </div>
   );
 }
 
 export default function Home() {
-  const [data, setData] = useState(Data);
-
+  const [data, setData] = useState([]);
+  const [info, setInfo] = useState({ name: "", description: "" });
+  const revenue = useRef(DATA.revenue);
   useEffect(() => {
-    let mappedSubtotal = Data.map((item) => {
+    let mappedSubtotal = DATA.items.map((item) => {
       if (item.type === ELEMENT_TYPES.SELECT) {
         item.subtotal = 0;
+        item.optionSelected = item?.options[0];
+        item.amount = 1;
+        item.subtotal = item.amount * item.optionSelected?.price;
       } else if (item.type === ELEMENT_TYPES.QUANTITY) {
+        item.amount = 1;
         item.subtotal = item.amount * item.price;
       } else if (item.type === ELEMENT_TYPES.PRICE) {
+        item.price = 0;
         item.subtotal = item.price;
       }
       return item;
@@ -185,59 +242,113 @@ export default function Home() {
       setData([...data]);
     }
   };
-  console.log(data);
-  const total = data.reduce(
-    (acc, item) => Number(acc) + (Number(item.subtotal) ?? 0),
-    0
-  );
+  const handleChangeInfo = (e) => {
+    setInfo({ ...info, [e.target.name]: e.target.value });
+  };
 
-  const revenueAmount = (total * revenue) / 100;
+  const total = data
+    .reduce((acc, item) => Number(acc) + (Number(item.subtotal) ?? 0), 0)
+    .toFixed(2);
 
-  const finalAmount = total + revenueAmount;
+  const revenueAmount = Number((total * revenue.current) / 100).toFixed(2);
+  const finalAmount = (Number(total) + Number(revenueAmount)).toFixed(2);
+
+  const handleSave = () => {
+    if (!info.name || !info.description) {
+      toast.error("Por favor, llene todos los campos");
+      return;
+    }
+    let list = localStorage.getItem("products");
+    if (list) {
+      list = JSON.parse(list);
+      list.push({
+        ...info,
+        data: data,
+        revenue: revenueAmount,
+        cost: total,
+        total: finalAmount,
+      });
+      localStorage.setItem("products", JSON.stringify(list));
+    } else {
+      localStorage.setItem(
+        "products",
+        JSON.stringify([
+          {
+            ...info,
+            data: data,
+            revenue: revenueAmount,
+            cost: total,
+            final: finalAmount,
+          },
+        ])
+      );
+    }
+    toast.success("Producto guardado con exito");
+  };
+
   return (
-    <div className="flex justify-center min-h-screen">
-      <main className="w-full max-w-[750px] px-4 sm:px-6 lg:px-8">
-        <header className="my-4">
-          <h1>App</h1>
-        </header>
-        <Box
-          component="form"
-          noValidate
-          autoComplete="off"
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            gap: 2,
-            width: "100%",
-            maxWidth: 600,
-            margin: "0 auto",
-          }}
-        >
-          {data.map((item, index) => (
-            <RowField
-              rowData={item}
-              key={item.id}
-              handleChange={(e) => handleChange(e, index)}
-              handleSelect={(e) => handleSelect(e, index)}
-            />
-          ))}
-          <hr />
-          <div style={{ fontSize: "18px", fontWeight: "bold" }}>
-            <div className="flex justify-end px-2 mb-2">
-              <h6>Total sin ganancia: $ {total.toFixed(2)}</h6>
-            </div>
-            <div className="flex justify-end px-2 mb-2">
-              <h6>
-                Ganancia del {revenue}%: $ {revenueAmount.toFixed(2)}
-              </h6>
-            </div>
-            <div className="flex justify-end px-2 mb-2">
-              <h6>Total : $ {finalAmount.toFixed(2)}</h6>
-            </div>
-          </div>
-        </Box>
-        <Navigator />
-      </main>
-    </div>
+    <Box
+      component="form"
+      noValidate
+      autoComplete="off"
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        gap: 2,
+        width: "100%",
+        margin: "0 auto",
+        background: "#f2f2f2",
+        padding: "15px",
+        borderRadius: "5px",
+        border: "1px solid #d7d7d7",
+      }}
+    >
+      <TextField
+        label={"Nombre del producto"}
+        variant="outlined"
+        type="text"
+        name="name"
+        onChange={handleChangeInfo}
+        value={info.name}
+        fullWidth
+      />
+      <TextField
+        label={"Descripción del producto"}
+        variant="outlined"
+        type="text"
+        name="description"
+        onChange={handleChangeInfo}
+        value={info.description}
+        fullWidth
+      />
+      {data.map((item, index) => (
+        <RowField
+          rowData={item}
+          key={item.id}
+          handleChange={(e) => handleChange(e, index)}
+          handleSelect={(e) => handleSelect(e, index)}
+        />
+      ))}
+      <hr />
+      <div style={{ fontSize: "17px", fontWeight: "500" }}>
+        <div className="flex justify-between px-2 mb-2">
+          <p>Total sin ganancia</p>
+          <p>$ {total}</p>
+        </div>
+        <div className="flex justify-between px-2 mb-2">
+          <p> Ganancia del {revenue.current}%</p>
+          <p>$ {revenueAmount}</p>
+        </div>
+        <div className="flex justify-between px-2 mb-2 font-bold">
+          <p> Total</p>
+          <p>$ {finalAmount}</p>
+        </div>
+      </div>
+      <div className="flex justify-center items-center">
+        <Button variant="contained" onClick={handleSave}>
+          Guardar
+        </Button>
+      </div>
+    </Box>
   );
 }
