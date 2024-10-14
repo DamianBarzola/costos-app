@@ -192,10 +192,13 @@ function RowField({ rowData, handleSelect, handleChange }) {
 }
 
 export default function Home() {
+  const [isLoading, setIsLoading] = useState(false);
   const [data, setData] = useState([]);
+
   const [info, setInfo] = useState({ name: "", description: "" });
   const revenue = useRef(DATA.revenue);
-  useEffect(() => {
+
+  const initializeData = () => {
     let mappedSubtotal = DATA.items.map((item) => {
       if (item.type === ELEMENT_TYPES.SELECT) {
         item.subtotal = 0;
@@ -213,6 +216,12 @@ export default function Home() {
     });
 
     setData(mappedSubtotal);
+    setIsLoading(false);
+  };
+
+  useEffect(() => {
+    setIsLoading(true);
+    initializeData();
   }, []);
 
   const handleSelect = (e, index) => {
@@ -283,9 +292,13 @@ export default function Home() {
         ])
       );
     }
+    initializeData();
+    setInfo({ name: "", description: "" });
     toast.success("Producto guardado con exito");
   };
-
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
   return (
     <Box
       component="form"

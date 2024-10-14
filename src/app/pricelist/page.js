@@ -88,8 +88,7 @@ const PriceList = () => {
                 onClick={() => handleSelectProduct(item)}
               >
                 <span className="truncate" style={{ width: "inherit" }}>
-                  {item.name +
-                    " aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"}
+                  {item.name}
                 </span>
                 <span style={{ width: "100px" }}>
                   {"$ " + (item.total ?? "-")}

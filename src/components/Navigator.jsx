@@ -24,18 +24,18 @@ export const Navigator = () => {
           setValue(newValue);
         }}
       >
-        {/* <Link href="/templates">
+        <Link href="/templates">
           <BottomNavigationAction label="Plantillas" icon={<List />} />
-        </Link> */}
+        </Link>
         <Link href="/">
           <BottomNavigationAction label="Nuevo" icon={<Add />} />
         </Link>
         <Link href="/pricelist">
           <BottomNavigationAction label="Precios" icon={<ListAlt />} />
         </Link>
-        <Link href="/sales">
+        {/* <Link href="/sales">
           <BottomNavigationAction label="Ventas" icon={<Sell />} />
-        </Link>
+        </Link> */}
       </BottomNavigation>
     </Box>
   );
