@@ -68,7 +68,7 @@ const PriceList = () => {
             onChange={(e) => setSearch(e.target.value)}
             slotProps={{
               input: {
-                startAdornment: (
+                endAdornment: (
                   <InputAdornment position="start">
                     <Search />
                   </InputAdornment>

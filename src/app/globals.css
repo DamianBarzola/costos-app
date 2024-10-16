@@ -31,3 +31,14 @@ body {
     text-wrap: balance;
   }
 }
+
+hr {
+  border-color: #afafaf;
+  margin: 0 0.1rem;
+}
+.template-row {
+  background: #fdfdfd;
+  padding: 15px 12px;
+  border-radius: 5px;
+  border: 1px solid #dfdfdf;
+}

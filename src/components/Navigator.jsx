@@ -1,14 +1,34 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import BottomNavigation from "@mui/material/BottomNavigation";
 import BottomNavigationAction from "@mui/material/BottomNavigationAction";
 import { Box } from "@mui/material";
 import { Add, List, ListAlt, Sell } from "@mui/icons-material";
-import Link from "next/link";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 export const Navigator = () => {
-  const [value, setValue] = useState(0);
+  const router = useRouter();
+  const [value, setValue] = useState(1);
+
+  const handleNavigation = (newValue) => {
+    setValue(newValue);
+    switch (newValue) {
+      case 0:
+        router.push("/templates");
+        break;
+      case 1:
+        router.push("/");
+        break;
+      case 2:
+        router.push("/pricelist");
+        break;
+      case 2:
+        router.push("/sales");
+        break;
+      default:
+        router.push("/");
+    }
+  };
 
   return (
     <Box
@@ -21,21 +41,13 @@ export const Navigator = () => {
         style={{ justifyContent: "space-around" }}
         value={value}
         onChange={(e, newValue) => {
-          setValue(newValue);
+          handleNavigation(newValue);
         }}
       >
-        <Link href="/templates">
-          <BottomNavigationAction label="Plantillas" icon={<List />} />
-        </Link>
-        <Link href="/">
-          <BottomNavigationAction label="Nuevo" icon={<Add />} />
-        </Link>
-        <Link href="/pricelist">
-          <BottomNavigationAction label="Precios" icon={<ListAlt />} />
-        </Link>
-        {/* <Link href="/sales">
-          <BottomNavigationAction label="Ventas" icon={<Sell />} />
-        </Link> */}
+        <BottomNavigationAction label="Plantillas" icon={<List />} />
+        <BottomNavigationAction label="Nuevo" icon={<Add />} />
+        <BottomNavigationAction label="Precios" icon={<ListAlt />} />
+        {/* <BottomNavigationAction label="Ventas" icon={<Sell />} /> */}
       </BottomNavigation>
     </Box>
   );

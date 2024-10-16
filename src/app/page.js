@@ -358,7 +358,7 @@ export default function Home() {
         </div>
       </div>
       <div className="flex justify-center items-center">
-        <Button variant="contained" onClick={handleSave}>
+        <Button variant="contained" onClick={handleSave} size="large">
           Guardar
         </Button>
       </div>
