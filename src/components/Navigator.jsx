@@ -5,10 +5,25 @@ import BottomNavigationAction from "@mui/material/BottomNavigationAction";
 import { Box } from "@mui/material";
 import { Add, List, ListAlt, Sell } from "@mui/icons-material";
 import { useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 
 export const Navigator = () => {
   const router = useRouter();
-  const [value, setValue] = useState(1);
+  const pathname = usePathname();
+  const [value, setValue] = useState(() => {
+    if (pathname === "/") {
+      return 1;
+    }
+    if (pathname === "/pricelist") {
+      return 2;
+    }
+    if (pathname === "/sales") {
+      return 3;
+    }
+    if (pathname === "/templates") {
+      return 0;
+    }
+  });
 
   const handleNavigation = (newValue) => {
     setValue(newValue);

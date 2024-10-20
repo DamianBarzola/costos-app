@@ -47,56 +47,57 @@ const PriceList = () => {
         }}
       >
         <h1 className="text-2xl">
-          <b> Lista de Precios</b>
+          <b> Calcular costo</b>
         </h1>
-        <hr className="mb-3" />
-        <div className="flex justify-between text-lg">
-          <h6>
-            <b>Productos</b>
-          </h6>
-          <span>
-            <b>Precios</b>
-          </span>
-        </div>
-        <hr className="mb-3" />
+        <div className="flex flex-col gap-y-4 w-full template-row">
+          <div className="flex justify-between text-lg">
+            <h6>
+              <b>Productos</b>
+            </h6>
+            <span>
+              <b>Precios</b>
+            </span>
+          </div>
+          <hr className="mb-3" />
 
-        <div className="mb-2">
-          <TextField
-            variant="outlined"
-            fullWidth
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            slotProps={{
-              input: {
-                endAdornment: (
-                  <InputAdornment position="start">
-                    <Search />
-                  </InputAdornment>
-                ),
-              },
-            }}
-          />
+          <div className="mb-2">
+            <TextField
+              variant="outlined"
+              fullWidth
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              slotProps={{
+                input: {
+                  endAdornment: (
+                    <InputAdornment position="start">
+                      <Search />
+                    </InputAdornment>
+                  ),
+                },
+              }}
+            />
+          </div>
+          {filteredProducts?.length === 0 ? (
+            <div className="text-center">No hay productos</div>
+          ) : (
+            <>
+              {filteredProducts.map((item, index) => (
+                <div
+                  key={"product-" + index}
+                  className="flex justify-between items-center my-1 w-auto"
+                  onClick={() => handleSelectProduct(item)}
+                >
+                  <span className="truncate" style={{ width: "inherit" }}>
+                    {item.name}
+                  </span>
+                  <span style={{ width: "100px" }}>
+                    {"$ " + (item.total ?? "-")}
+                  </span>
+                </div>
+              ))}
+            </>
+          )}
         </div>
-        {filteredProducts?.length === 0 ? (
-          <div className="text-center">No hay productos</div>
-        ) : (
-          <>
-            {filteredProducts.map((item, index) => (
-              <div
-                key={"product-" + index}
-                className="flex justify-between items-center my-1 w-auto"
-                onClick={() => handleSelectProduct(item)}
-              >
-                <span className="truncate" style={{ width: "inherit" }}>
-                  {item.name}
-                </span>
-                <span style={{ width: "100px" }}>
-                  {"$ " + (item.total ?? "-")}
-                </span>
-              </div>
-            ))}
-          </>
-        )}
       </Box>
       <Dialog open={infoDialog} onClose={() => setInfoDialog(false)}>
         <DialogTitle>

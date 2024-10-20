@@ -13,6 +13,7 @@ import {
   TextField,
 } from "@mui/material";
 import React, { useState } from "react";
+import { toast } from "sonner";
 
 let DATA = {
   revenue: 50,
@@ -80,8 +81,9 @@ const Templates = () => {
       : []
   );
   const [newCategory, setNewCategory] = useState(ELEMENT_TYPES.SELECT);
-  const handleChangeRevenue = (e) => {
-    setTemplate({ ...template, revenue: e.target.value });
+  const [errors, seterrors] = useState([]);
+  const handleChangeTemplateInfo = (e) => {
+    setTemplate({ ...template, [e.target.name]: e.target.value });
   };
 
   const handleSelectInput = (e, itemIndex) => {
@@ -122,10 +124,6 @@ const Templates = () => {
     _templateItems[itemIndex][name] = value;
     setTemplate({ ...template, items: _templateItems });
   };
-  const handleSaveTemplate = () => {
-    localStorage.setItem("templates", JSON.stringify([...templates, template]));
-    setTemplates([...templates, template]);
-  };
 
   const handleDeleteTemplateField = (index, optionIndex = -1) => {
     let _templateItems = [...template.items];
@@ -141,35 +139,66 @@ const Templates = () => {
       return;
     }
     let _templateItems = [...template.items];
-    let category;
+    let category = {
+      label: "",
+      id: Date.now(),
+      type: newCategory,
+    };
     if (newCategory === ELEMENT_TYPES.SELECT) {
-      category = {
-        id: _templateItems.length + 1,
-        label: "",
-        type: ELEMENT_TYPES.SELECT,
-        options: [{ id: 1, label: "", price: 0 }],
-      };
+      category = { ...category, options: [{ id: 1, label: "", price: 0 }] };
     }
     if (newCategory === ELEMENT_TYPES.QUANTITY) {
-      category = {
-        id: _templateItems.length + 1,
-        label: "",
-        type: ELEMENT_TYPES.QUANTITY,
-        price: 1800,
-      };
-      if (newCategory === ELEMENT_TYPES.PRICE) {
-        category = {
-          id: _templateItems.length + 1,
-          label: "",
-          type: ELEMENT_TYPES.PRICE,
-        };
-      }
-
-      _templateItems.push(category);
-      setTemplate({ ...template, items: _templateItems });
-      setNewCategory(ELEMENT_TYPES.SELECT);
+      category = { ...category, type: ELEMENT_TYPES.QUANTITY, price: 0 };
     }
+    // if (newCategory === ELEMENT_TYPES.PRICE) {
+    //   category = {
+    //     type: ELEMENT_TYPES.PRICE,
+    //   };
+    _templateItems.push(category);
+    setTemplate({ ...template, items: _templateItems });
+    setNewCategory(ELEMENT_TYPES.SELECT);
   };
+
+  const handleSaveTemplate = () => {
+    let _template = { ...template };
+    _template.id = Date.now();
+    let errors = [];
+    _template.items.forEach((item) => {
+      if (item.type === ELEMENT_TYPES.SELECT) {
+        item.options.forEach((option) => {
+          if (!option.label || !option.price) {
+            errors.push(item.id + option.id);
+          }
+        });
+        if (!item.label) {
+          errors.push(item.id);
+        }
+      }
+      if (item.type === ELEMENT_TYPES.QUANTITY) {
+        if (!item.price || !item.label) {
+          errors.push(item.id);
+        }
+      }
+      if (item.type === ELEMENT_TYPES.PRICE) {
+        if (!item.label) {
+          errors.push(item.id);
+        }
+      }
+    });
+    !_template.name && errors.push(_template.name);
+    !_template.revenue && errors.push(_template.revenue);
+    console.log(errors);
+    if (errors.length) {
+      toast.error("Por favor, llene todos los campos");
+      return;
+    }
+    console.log(template);
+    localStorage.setItem("templates", JSON.stringify([...templates, template]));
+
+    setTemplates([...templates, template]);
+    toast.success("Plantilla guardada");
+  };
+  console.log(errors);
   return (
     <Box
       component="form"
@@ -190,187 +219,194 @@ const Templates = () => {
       <h1 className="text-2xl">
         <b> Plantillas</b>
       </h1>
-      <div className="flex w-full template-row">
+      <div className="flex flex-col gap-y-4 w-full template-row">
+        <TextField
+          id="outlined-multiline-flexible"
+          label="Nombre de la plantilla"
+          type="text"
+          value={template?.name}
+          name="name"
+          onChange={handleChangeTemplateInfo}
+          fullWidth
+        />
         <TextField
           id="outlined-multiline-flexible"
           label="Ganancia"
           type="number"
-          value={template.revenue}
-          onChange={handleChangeRevenue}
+          value={template?.revenue}
+          name="revenue"
+          onChange={handleChangeTemplateInfo}
           fullWidth
         />
       </div>
       {template?.items?.map((item, index) => {
         if (item.type === ELEMENT_TYPES.SELECT) {
           return (
-            <>
-              <div className="flex w-full template-row" key={item.id}>
-                <div className="flex-grow">
-                  <div className="flex w-full">
-                    <div className="flex justify-between gap-x-2 flex-grow">
-                      <TextField
-                        id="outlined-multiline-flexible"
-                        label="Nombre de la categoría"
-                        value={item.label}
-                        onChange={(e) => handleSelectInput(e, index)}
-                        fullWidth
-                      />{" "}
-                    </div>
-                    <div className="w-auto px-3 pt-2">
+            <div className="flex w-full template-row" key={item.id}>
+              <div className="flex-grow">
+                <div className="flex w-full">
+                  <div className="flex justify-between gap-x-2 flex-grow">
+                    <TextField
+                      id="outlined-multiline-flexible"
+                      label="Nombre de la categoría"
+                      value={item.label}
+                      onChange={(e) => handleSelectInput(e, index)}
+                      fullWidth
+                    />{" "}
+                  </div>
+                  <div className="w-auto px-3 pt-2">
+                    <IconButton
+                      size="small"
+                      aria-label="add"
+                      className="bordered-button"
+                      onClick={() => handleDeleteTemplateField(index)}
+                      color="error"
+                      style={{ border: "1px solid #e1e1e1" }}
+                    >
+                      <Delete />
+                    </IconButton>
+                  </div>
+                </div>
+                <div className="mx-5">
+                  <div className=" flex justify-between items-center mt-3 mb-2 px-3">
+                    <span>Opciones</span>
+                    <div>
                       <IconButton
                         size="small"
                         aria-label="add"
                         className="bordered-button"
-                        onClick={() => handleDeleteTemplateField(index)}
-                        color="error"
+                        onClick={() => handleSelectAddOption(index)}
+                        color="primary"
                         style={{ border: "1px solid #e1e1e1" }}
                       >
-                        <Delete />
+                        <Add />
                       </IconButton>
                     </div>
                   </div>
-                  <div className="mx-5">
-                    <div className=" flex justify-between items-center mt-3 mb-2 px-3">
-                      <span>Opciones</span>
-                      <div>
-                        <IconButton
-                          size="small"
-                          aria-label="add"
-                          className="bordered-button"
-                          onClick={() => handleSelectAddOption(index)}
-                          color="primary"
-                          style={{ border: "1px solid #e1e1e1" }}
+                  {item?.length === 0 ? (
+                    <div className="text-center">No hay opciones</div>
+                  ) : (
+                    item.options?.map((option, optionIndex) => {
+                      return (
+                        <div
+                          key={item.id + option.id}
+                          className="flex w-full mt-4"
                         >
-                          <Add />
-                        </IconButton>
-                      </div>
-                    </div>
-                    {item?.length === 0 ? (
-                      <div className="text-center">No hay opciones</div>
-                    ) : (
-                      item.options?.map((option, optionIndex) => {
-                        return (
-                          <div key={option.id} className="flex w-full mt-4">
-                            <div className="flex justify-between gap-x-2 flex-grow">
-                              <TextField
-                                id="outlined-multiline-flexible"
-                                label="Nombre de la opción"
-                                name="label"
-                                value={option.label}
-                                onChange={(e) =>
-                                  handleSelectOption(e, index, optionIndex)
-                                }
-                                fullWidth
-                              />
-                              <TextField
-                                id="outlined-multiline-flexible"
-                                type="number"
-                                name="price"
-                                label="Precio"
-                                value={option.price}
-                                onChange={(e) =>
-                                  handleSelectOption(e, index, optionIndex)
-                                }
-                                fullWidth
-                              />
-                            </div>
-                            <div className="w-auto px-3 flex items-center justify-center">
-                              <IconButton
-                                size="small"
-                                aria-label="add"
-                                className="bordered-button"
-                                onClick={() =>
-                                  handleDeleteTemplateField(index, optionIndex)
-                                }
-                                color="error"
-                                style={{ border: "1px solid #e1e1e1" }}
-                              >
-                                <Delete />
-                              </IconButton>
-                            </div>
+                          <div className="flex justify-between gap-x-2 flex-grow">
+                            <TextField
+                              id="outlined-multiline-flexible"
+                              label="Nombre de la opción"
+                              name="label"
+                              value={option.label}
+                              onChange={(e) =>
+                                handleSelectOption(e, index, optionIndex)
+                              }
+                              fullWidth
+                            />
+                            <TextField
+                              id="outlined-multiline-flexible"
+                              type="number"
+                              name="price"
+                              label="Precio"
+                              value={option.price}
+                              onChange={(e) =>
+                                handleSelectOption(e, index, optionIndex)
+                              }
+                              fullWidth
+                            />
                           </div>
-                        );
-                      })
-                    )}
-                  </div>
+                          <div className="w-auto px-3 flex items-center justify-center">
+                            <IconButton
+                              size="small"
+                              aria-label="add"
+                              className="bordered-button"
+                              onClick={() =>
+                                handleDeleteTemplateField(index, optionIndex)
+                              }
+                              color="error"
+                              style={{ border: "1px solid #e1e1e1" }}
+                            >
+                              <Delete />
+                            </IconButton>
+                          </div>
+                        </div>
+                      );
+                    })
+                  )}
                 </div>
               </div>
-            </>
+            </div>
           );
         }
         if (item.type === ELEMENT_TYPES.QUANTITY) {
           return (
-            <>
-              <div className="flex w-full template-row">
-                <div
-                  className="flex justify-between gap-x-2 flex-grow"
-                  key={item.id}
-                >
-                  <TextField
-                    id="outlined-multiline-flexible"
-                    label="Nombre de la categoría"
-                    name="label"
-                    value={item.label}
-                    onChange={(e) => handleQuantityInput(e, index)}
-                    fullWidth
-                  />
-                  <TextField
-                    id="outlined-multiline-flexible"
-                    label="Precio"
-                    type="number"
-                    name="price"
-                    value={item.price}
-                    onChange={(e) => handleQuantityInput(e, index)}
-                    fullWidth
-                  />
-                </div>
-                <div className="flex justify-center items-center w-auto px-3">
-                  <IconButton
-                    size="small"
-                    aria-label="add"
-                    className="bordered-button"
-                    onClick={() => handleDeleteTemplateField(index)}
-                    color="error"
-                    style={{ border: "1px solid #e1e1e1" }}
-                  >
-                    <Delete />
-                  </IconButton>
-                </div>
+            <div className="flex w-full template-row" key={item.id}>
+              <div
+                className="flex justify-between gap-x-2 flex-grow"
+                key={item.id}
+              >
+                <TextField
+                  id="outlined-multiline-flexible"
+                  label="Nombre de la categoría"
+                  name="label"
+                  value={item.label}
+                  onChange={(e) => handleQuantityInput(e, index)}
+                  fullWidth
+                />
+                <TextField
+                  id="outlined-multiline-flexible"
+                  label="Precio"
+                  type="number"
+                  name="price"
+                  value={item.price}
+                  onChange={(e) => handleQuantityInput(e, index)}
+                  fullWidth
+                />
               </div>
-            </>
+              <div className="flex justify-center items-center w-auto px-3">
+                <IconButton
+                  size="small"
+                  aria-label="add"
+                  className="bordered-button"
+                  onClick={() => handleDeleteTemplateField(index)}
+                  color="error"
+                  style={{ border: "1px solid #e1e1e1" }}
+                >
+                  <Delete />
+                </IconButton>
+              </div>
+            </div>
           );
         }
         if (item.type === ELEMENT_TYPES.PRICE) {
           return (
-            <>
-              <div className="flex w-full template-row">
-                <div
-                  className="flex justify-between gap-x-2 flex-grow"
-                  key={item.id}
-                >
-                  <TextField
-                    id="outlined-multiline-flexible"
-                    label="Nombre de la categoría"
-                    value={item.label}
-                    name="label"
-                    onChange={(e) => handlePriceInput(e, index)}
-                    fullWidth
-                  />
-                </div>
-                <div className="flex justify-center items-center w-auto px-3">
-                  <IconButton
-                    size="small"
-                    aria-label="add"
-                    className="bordered-button"
-                    onClick={() => handleDeleteTemplateField(index)}
-                    color="error"
-                    style={{ border: "1px solid #e1e1e1" }}
-                  >
-                    <Delete />
-                  </IconButton>
-                </div>
+            <div className="flex w-full template-row" key={item.id}>
+              <div
+                className="flex justify-between gap-x-2 flex-grow"
+                key={item.id}
+              >
+                <TextField
+                  id="outlined-multiline-flexible"
+                  label="Nombre de la categoría"
+                  value={item.label}
+                  name="label"
+                  onChange={(e) => handlePriceInput(e, index)}
+                  fullWidth
+                />
               </div>
-            </>
+              <div className="flex justify-center items-center w-auto px-3">
+                <IconButton
+                  size="small"
+                  aria-label="add"
+                  className="bordered-button"
+                  onClick={() => handleDeleteTemplateField(index)}
+                  color="error"
+                  style={{ border: "1px solid #e1e1e1" }}
+                >
+                  <Delete />
+                </IconButton>
+              </div>
+            </div>
           );
         }
       })}

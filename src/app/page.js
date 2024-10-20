@@ -316,45 +316,50 @@ export default function Home() {
         border: "1px solid #d7d7d7",
       }}
     >
-      <TextField
-        label={"Nombre del producto"}
-        variant="outlined"
-        type="text"
-        name="name"
-        onChange={handleChangeInfo}
-        value={info.name}
-        fullWidth
-      />
-      <TextField
-        label={"Descripción del producto"}
-        variant="outlined"
-        type="text"
-        name="description"
-        onChange={handleChangeInfo}
-        value={info.description}
-        fullWidth
-      />
-      {data.map((item, index) => (
-        <RowField
-          rowData={item}
-          key={item.id}
-          handleChange={(e) => handleChange(e, index)}
-          handleSelect={(e) => handleSelect(e, index)}
+      <h1 className="text-2xl">
+        <b> Calcular costo</b>
+      </h1>
+      <div className="flex flex-col gap-y-4 w-full template-row">
+        <TextField
+          label={"Nombre del producto"}
+          variant="outlined"
+          type="text"
+          name="name"
+          onChange={handleChangeInfo}
+          value={info.name}
+          fullWidth
         />
-      ))}
-      <hr />
-      <div style={{ fontSize: "17px", fontWeight: "500" }}>
-        <div className="flex justify-between px-2 mb-2">
-          <p>Total sin ganancia</p>
-          <p>$ {total}</p>
-        </div>
-        <div className="flex justify-between px-2 mb-2">
-          <p> Ganancia del {revenue.current}%</p>
-          <p>$ {revenueAmount}</p>
-        </div>
-        <div className="flex justify-between px-2 mb-2 font-bold">
-          <p> Total</p>
-          <p>$ {finalAmount}</p>
+        <TextField
+          label={"Descripción del producto"}
+          variant="outlined"
+          type="text"
+          name="description"
+          onChange={handleChangeInfo}
+          value={info.description}
+          fullWidth
+        />
+        {data.map((item, index) => (
+          <RowField
+            rowData={item}
+            key={item.id}
+            handleChange={(e) => handleChange(e, index)}
+            handleSelect={(e) => handleSelect(e, index)}
+          />
+        ))}
+        <hr />
+        <div style={{ fontSize: "17px", fontWeight: "500" }}>
+          <div className="flex justify-between px-2 mb-2">
+            <p>Total sin ganancia</p>
+            <p>$ {total}</p>
+          </div>
+          <div className="flex justify-between px-2 mb-2">
+            <p> Ganancia del {revenue.current}%</p>
+            <p>$ {revenueAmount}</p>
+          </div>
+          <div className="flex justify-between px-2 mb-2 font-bold">
+            <p> Total</p>
+            <p>$ {finalAmount}</p>
+          </div>
         </div>
       </div>
       <div className="flex justify-center items-center">
