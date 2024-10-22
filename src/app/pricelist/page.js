@@ -31,6 +31,7 @@ const PriceList = () => {
   const filteredProducts = productList.filter((product) => {
     return product.name.toLowerCase().includes(search.toLowerCase());
   });
+
   return (
     <>
       <Box component="div" sx={BOX_STYLES}>
@@ -77,7 +78,7 @@ const PriceList = () => {
               {filteredProducts.map((item, index) => (
                 <div
                   key={"product-" + index}
-                  className="flex justify-between items-center my-1 w-auto py-3 border-b-2 border-gray-300"
+                  className="flex justify-between items-center w-auto py-3 border-b-2 border-gray-300 cursor-pointer active:bg-gray-300"
                   onClick={() => handleSelectProduct(item)}
                 >
                   <div className="w-8/12 min-w-min">
