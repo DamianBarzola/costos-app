@@ -90,14 +90,16 @@ export default function Home() {
     };
   });
   const [info, setInfo] = useState({ name: "", description: "" });
-  const revenue = useRef(() => {
+  const revenue = useRef(40);
+
+  useEffect(() => {
     if (typeof window !== "undefined") {
       const savedTemplate = localStorage.getItem("template");
-      return savedTemplate ? Number(JSON.parse(savedTemplate).revenue) : 40;
+      revenue.current = savedTemplate
+        ? Number(JSON.parse(savedTemplate).revenue)
+        : 40;
     }
-    return 40;
-  });
-
+  }, []);
   const initializeData = (template) => {
     let mappedSubtotal = template.items.map((item) => {
       if (item.type === ELEMENT_TYPES.SELECT) {

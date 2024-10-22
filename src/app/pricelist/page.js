@@ -76,7 +76,7 @@ const PriceList = () => {
           </div>
 
           {filteredProducts?.length === 0 ? (
-            <div className="text-center">No hay productos</div>
+            <div className="text-center my-3">No hay productos</div>
           ) : (
             <>
               {filteredProducts.map((item, index) => (
