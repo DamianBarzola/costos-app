@@ -1,6 +1,6 @@
 "use client";
 import { Box, Button, MenuItem, TextField } from "@mui/material";
-import { ELEMENT_TYPES } from "@/consts";
+import { BOX_STYLES, ELEMENT_TYPES } from "@/consts";
 import { useEffect, useRef } from "react";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -300,23 +300,8 @@ export default function Home() {
     return <div>Loading...</div>;
   }
   return (
-    <Box
-      component="form"
-      noValidate
-      autoComplete="off"
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        gap: 2,
-        width: "100%",
-        margin: "0 auto",
-        background: "#f2f2f2",
-        padding: "15px",
-        borderRadius: "5px",
-        border: "1px solid #d7d7d7",
-      }}
-    >
-      <h1 className="text-2xl">
+    <Box component="form" noValidate autoComplete="off" sx={BOX_STYLES}>
+      <h1 className="text-2xl text-center my-2">
         <b> Calcular costo</b>
       </h1>
       <div className="flex flex-col gap-y-4 w-full template-row">
@@ -361,11 +346,11 @@ export default function Home() {
             <p>$ {finalAmount}</p>
           </div>
         </div>
-      </div>
-      <div className="flex justify-center items-center">
-        <Button variant="contained" onClick={handleSave} size="large">
-          Guardar
-        </Button>
+        <div className="flex justify-center items-center">
+          <Button variant="contained" onClick={handleSave} size="large">
+            Guardar
+          </Button>
+        </div>
       </div>
     </Box>
   );

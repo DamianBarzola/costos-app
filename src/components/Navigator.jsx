@@ -47,7 +47,7 @@ export const Navigator = () => {
 
   return (
     <Box
-      className="z-50 bg-white fixed bottom-0 left-0 right-0 w-full text-center p-3 sm:static sm:bottom-auto"
+      className="z-50 bg-white fixed bottom-0 left-0 right-0 w-full text-center p-3"
       elevation={3}
     >
       <BottomNavigation

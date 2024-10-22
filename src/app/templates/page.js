@@ -1,5 +1,5 @@
 "use client";
-import { ELEMENT_TYPES } from "@/consts";
+import { BOX_STYLES, ELEMENT_TYPES } from "@/consts";
 import { Add, Delete } from "@mui/icons-material";
 import {
   Box,
@@ -198,26 +198,10 @@ const Templates = () => {
     setTemplates([...templates, template]);
     toast.success("Plantilla guardada");
   };
-  console.log(errors);
   return (
-    <Box
-      component="form"
-      noValidate
-      autoComplete="off"
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        gap: "3px",
-        width: "100%",
-        margin: "0 auto",
-        background: "#f2f2f2",
-        padding: "15px",
-        borderRadius: "5px",
-        border: "1px solid #d7d7d7",
-      }}
-    >
-      <h1 className="text-2xl">
-        <b> Plantillas</b>
+    <Box component="form" noValidate autoComplete="off" sx={BOX_STYLES}>
+      <h1 className="text-2xl text-center my-2">
+        <b> Plantilla </b>
       </h1>
       <div className="flex flex-col gap-y-4 w-full template-row">
         <TextField
@@ -267,7 +251,7 @@ const Templates = () => {
                     </IconButton>
                   </div>
                 </div>
-                <div className="mx-5">
+                <div className="mx-4">
                   <div className=" flex justify-between items-center mt-3 mb-2 px-3">
                     <span>Opciones</span>
                     <div>

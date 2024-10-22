@@ -3,8 +3,12 @@ import "./globals.css";
 import Header from "@/components/Header";
 import { Navigator } from "@/components/Navigator";
 import { Toaster } from "sonner";
+import { Poppins } from "next/font/google";
 
-const inter = Inter({ subsets: ["latin"] });
+const roboto = Poppins({
+  weight: "400",
+  subsets: ["latin"],
+});
 
 export const metadata = {
   title: "Clavelina App",
@@ -29,14 +33,14 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
-      <body className={inter.className}>
+    <html lang="es">
+      <body className={roboto.className}>
         <div className="flex justify-center min-h-screen">
           <main className="w-full max-w-[750px] px-2 sm:px-6 lg:px-8">
             <Toaster position="top-center" />
 
             <Header />
-            <div className="mb-20 sm:mb-0">{children}</div>
+            <div className="mb-36 sm:mb-0 relative top-14">{children}</div>
             <Navigator />
           </main>
         </div>
