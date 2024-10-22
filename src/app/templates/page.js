@@ -15,73 +15,13 @@ import {
 import React, { useState } from "react";
 import { toast } from "sonner";
 
-let DATA = {
-  revenue: 50,
-  items: [
-    {
-      id: 1,
-      label: "Tela",
-      type: ELEMENT_TYPES.SELECT,
-      options: [
-        { id: 1, label: "Tela 1", price: 500 },
-        { id: 2, label: "Tela 2", price: 500 },
-      ],
-    },
-    {
-      id: 2,
-      label: "Volado",
-      type: ELEMENT_TYPES.PRICE,
-    },
-    {
-      id: 3,
-      label: "Cinta",
-      type: ELEMENT_TYPES.PRICE,
-    },
-    {
-      id: 4,
-      label: "Etiqueta Eco",
-      type: ELEMENT_TYPES.QUANTITY,
-      price: 150,
-    },
-    {
-      id: 5,
-      label: "Etiqueta",
-      type: ELEMENT_TYPES.QUANTITY,
-      price: 50,
-    },
-    {
-      id: 6,
-      label: "Hilos",
-      type: ELEMENT_TYPES.PRICE,
-    },
-    {
-      id: 7,
-      label: "Mano de obra",
-      type: ELEMENT_TYPES.QUANTITY,
-      price: 1800,
-    },
-    {
-      id: 8,
-      label: "Bolsa",
-      type: ELEMENT_TYPES.QUANTITY,
-      price: 50,
-    },
-  ],
-};
 const Templates = () => {
   const [template, setTemplate] = useState(
-    DATA
-    // localStorage.getItem("templates")
-    //   ? JSON.parse(localStorage.getItem("templates"))?.[0]
-    //   : { revenue: 0, items: [] }
-  );
-  const [templates, setTemplates] = useState(
-    localStorage.getItem("templates")
-      ? JSON.parse(localStorage.getItem("templates"))
-      : []
+    localStorage.getItem("template")
+      ? JSON.parse(localStorage.getItem("template"))
+      : { revenue: 0, name: "", items: [] }
   );
   const [newCategory, setNewCategory] = useState(ELEMENT_TYPES.SELECT);
-  const [errors, seterrors] = useState([]);
   const handleChangeTemplateInfo = (e) => {
     setTemplate({ ...template, [e.target.name]: e.target.value });
   };
@@ -187,15 +127,12 @@ const Templates = () => {
     });
     !_template.name && errors.push(_template.name);
     !_template.revenue && errors.push(_template.revenue);
-    console.log(errors);
     if (errors.length) {
       toast.error("Por favor, llene todos los campos");
       return;
     }
-    console.log(template);
-    localStorage.setItem("templates", JSON.stringify([...templates, template]));
+    localStorage.setItem("template", JSON.stringify(template));
 
-    setTemplates([...templates, template]);
     toast.success("Plantilla guardada");
   };
   return (

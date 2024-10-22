@@ -20,7 +20,7 @@ export const Navigator = () => {
     if (pathname === "/sales") {
       return 3;
     }
-    if (pathname === "/templates") {
+    if (pathname === "/template") {
       return 0;
     }
   });
@@ -29,7 +29,7 @@ export const Navigator = () => {
     setValue(newValue);
     switch (newValue) {
       case 0:
-        router.push("/templates");
+        router.push("/template");
         break;
       case 1:
         router.push("/");
@@ -47,7 +47,7 @@ export const Navigator = () => {
 
   return (
     <Box
-      className="z-50 bg-white fixed bottom-0 left-0 right-0 w-full text-center p-3"
+      className="z-50 bg-white fixed bottom-0 left-0 right-0 w-full text-center p-2"
       elevation={3}
     >
       <BottomNavigation

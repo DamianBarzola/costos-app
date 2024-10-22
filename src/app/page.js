@@ -5,128 +5,6 @@ import { useEffect, useRef } from "react";
 import { useState } from "react";
 import { toast } from "sonner";
 
-// let DATA = [
-//   {
-//     id: 1,
-//     label: "Tela",
-//     type: ELEMENT_TYPES.SELECT,
-//     amount: 1,
-//     // price: null,
-//     subtotal: null,
-//     optionSelected: "",
-//     options: [
-//       { id: 1, label: "Tela 1", price: 500 },
-//       { id: 2, label: "Tela 2", price: 500 },
-//     ],
-//   },
-//   {
-//     id: 2,
-//     label: "Volado",
-//     type: ELEMENT_TYPES.PRICE,
-//     price: 0,
-//     subtotal: null,
-//   },
-//   {
-//     id: 3,
-//     label: "Cinta",
-//     type: ELEMENT_TYPES.PRICE,
-//     price: 0,
-//     subtotal: null,
-//   },
-//   {
-//     id: 4,
-//     label: "Etiqueta Eco",
-//     type: ELEMENT_TYPES.QUANTITY,
-//     price: 150,
-//     amount: 1,
-//     subtotal: null,
-//   },
-//   {
-//     id: 5,
-//     label: "Etiqueta",
-//     type: ELEMENT_TYPES.QUANTITY,
-//     price: 50,
-//     amount: 1,
-//     subtotal: null,
-//   },
-//   {
-//     id: 6,
-//     label: "Hilos",
-//     type: ELEMENT_TYPES.PRICE,
-//     price: 0,
-//     subtotal: null,
-//   },
-//   {
-//     id: 7,
-//     label: "Mano de obra",
-//     type: ELEMENT_TYPES.QUANTITY,
-//     price: 1800,
-//     amount: 1,
-//     subtotal: null,
-//   },
-//   {
-//     id: 8,
-//     label: "Bolsa",
-//     type: ELEMENT_TYPES.QUANTITY,
-//     price: 50,
-//     amount: 1,
-//     subtotal: null,
-//   },
-// ];
-let DATA = {
-  revenue: 50,
-  items: [
-    {
-      id: 1,
-      label: "Tela",
-      type: ELEMENT_TYPES.SELECT,
-      options: [
-        { id: 1, label: "Tela 1", price: 500 },
-        { id: 2, label: "Tela 2", price: 500 },
-      ],
-    },
-    {
-      id: 2,
-      label: "Volado",
-      type: ELEMENT_TYPES.PRICE,
-    },
-    {
-      id: 3,
-      label: "Cinta",
-      type: ELEMENT_TYPES.PRICE,
-    },
-    {
-      id: 4,
-      label: "Etiqueta Eco",
-      type: ELEMENT_TYPES.QUANTITY,
-      price: 150,
-    },
-    {
-      id: 5,
-      label: "Etiqueta",
-      type: ELEMENT_TYPES.QUANTITY,
-      price: 50,
-    },
-    {
-      id: 6,
-      label: "Hilos",
-      type: ELEMENT_TYPES.PRICE,
-    },
-    {
-      id: 7,
-      label: "Mano de obra",
-      type: ELEMENT_TYPES.QUANTITY,
-      price: 1800,
-    },
-    {
-      id: 8,
-      label: "Bolsa",
-      type: ELEMENT_TYPES.QUANTITY,
-      price: 50,
-    },
-  ],
-};
-
 function RowField({ rowData, handleSelect, handleChange }) {
   return (
     <div className="flex justify-between gap-x-2">
@@ -155,7 +33,7 @@ function RowField({ rowData, handleSelect, handleChange }) {
               variant="outlined"
               type="number"
               onChange={handleChange}
-              value={rowData.amount}
+              value={rowData.amount || ""}
               fullWidth
               min={0}
             />
@@ -166,9 +44,9 @@ function RowField({ rowData, handleSelect, handleChange }) {
             variant="outlined"
             type="number"
             onChange={handleChange}
-            value={rowData.amount}
-            fullWidth
+            value={rowData.amount || ""}
             min={0}
+            fullWidth
           />
         ) : (
           rowData.type === ELEMENT_TYPES.PRICE && (
@@ -177,8 +55,8 @@ function RowField({ rowData, handleSelect, handleChange }) {
               variant="outlined"
               type="number"
               onChange={handleChange}
+              value={rowData.price || ""}
               min={0}
-              value={rowData.price}
               fullWidth
             />
           )
@@ -194,12 +72,16 @@ function RowField({ rowData, handleSelect, handleChange }) {
 export default function Home() {
   const [isLoading, setIsLoading] = useState(false);
   const [data, setData] = useState([]);
-
+  const [template, setTemplate] = useState(
+    JSON.parse(localStorage.getItem("template"))
+  );
   const [info, setInfo] = useState({ name: "", description: "" });
-  const revenue = useRef(DATA.revenue);
+  const revenue = useRef(
+    Number(JSON.parse(localStorage.getItem("template")).revenue)
+  );
 
-  const initializeData = () => {
-    let mappedSubtotal = DATA.items.map((item) => {
+  const initializeData = (template) => {
+    let mappedSubtotal = template.items.map((item) => {
       if (item.type === ELEMENT_TYPES.SELECT) {
         item.subtotal = 0;
         item.optionSelected = item?.options[0];
@@ -221,8 +103,8 @@ export default function Home() {
 
   useEffect(() => {
     setIsLoading(true);
-    initializeData();
-  }, []);
+    initializeData(template);
+  }, [template]);
 
   const handleSelect = (e, index) => {
     const value = Number(e.target.value);
@@ -234,7 +116,6 @@ export default function Home() {
 
   const handleChange = (e, index) => {
     const value = Number(e.target.value);
-
     if (value >= 0) {
       let row = data[index];
       if (row.type === ELEMENT_TYPES.SELECT) {
@@ -292,7 +173,7 @@ export default function Home() {
         ])
       );
     }
-    initializeData();
+    initializeData(template);
     setInfo({ name: "", description: "" });
     toast.success("Producto guardado con exito");
   };
@@ -319,6 +200,7 @@ export default function Home() {
           variant="outlined"
           type="text"
           name="description"
+          multiline
           onChange={handleChangeInfo}
           value={info.description}
           fullWidth
