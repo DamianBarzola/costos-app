@@ -20,7 +20,9 @@ const PriceList = () => {
   const [productSelected, setProductSelected] = useState(null);
 
   const [productList, setProductList] = useState(
-    JSON.parse(localStorage.getItem("products")) || []
+    localStorage.getItem("products")
+      ? JSON.parse(localStorage.getItem("products"))
+      : []
   );
 
   const handleSelectProduct = (product) => {

@@ -73,11 +73,19 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(false);
   const [data, setData] = useState([]);
   const [template, setTemplate] = useState(
-    JSON.parse(localStorage.getItem("template"))
+    localStorage.getItem("template")
+      ? JSON.parse(localStorage.getItem("template"))
+      : {
+          revenue: 0,
+          name: "",
+          items: [],
+        }
   );
   const [info, setInfo] = useState({ name: "", description: "" });
   const revenue = useRef(
-    Number(JSON.parse(localStorage.getItem("template")).revenue)
+    localStorage.getItem("template")
+      ? Number(JSON.parse(localStorage.getItem("template")).revenue)
+      : 40
   );
 
   const initializeData = (template) => {
