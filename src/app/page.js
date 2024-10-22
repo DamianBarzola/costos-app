@@ -72,21 +72,31 @@ function RowField({ rowData, handleSelect, handleChange }) {
 export default function Home() {
   const [isLoading, setIsLoading] = useState(false);
   const [data, setData] = useState([]);
-  const [template, setTemplate] = useState(
-    localStorage.getItem("template")
-      ? JSON.parse(localStorage.getItem("template"))
-      : {
-          revenue: 0,
-          name: "",
-          items: [],
-        }
-  );
+  const [template, setTemplate] = useState(() => {
+    if (typeof window !== "undefined") {
+      const savedTemplate = localStorage.getItem("template");
+      return savedTemplate
+        ? JSON.parse(savedTemplate)
+        : {
+            revenue: 0,
+            name: "",
+            items: [],
+          };
+    }
+    return {
+      revenue: 0,
+      name: "",
+      items: [],
+    };
+  });
   const [info, setInfo] = useState({ name: "", description: "" });
-  const revenue = useRef(
-    localStorage.getItem("template")
-      ? Number(JSON.parse(localStorage.getItem("template")).revenue)
-      : 40
-  );
+  const revenue = useRef(() => {
+    if (typeof window !== "undefined") {
+      const savedTemplate = localStorage.getItem("template");
+      return savedTemplate ? Number(JSON.parse(savedTemplate).revenue) : 40;
+    }
+    return 40;
+  });
 
   const initializeData = (template) => {
     let mappedSubtotal = template.items.map((item) => {

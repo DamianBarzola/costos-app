@@ -19,11 +19,13 @@ const PriceList = () => {
   const [infoDialog, setInfoDialog] = useState(false);
   const [productSelected, setProductSelected] = useState(null);
 
-  const [productList, setProductList] = useState(
-    localStorage.getItem("products")
-      ? JSON.parse(localStorage.getItem("products"))
-      : []
-  );
+  const [productList, setProductList] = useState(() => {
+    if (typeof window !== "undefined") {
+      const products = localStorage.getItem("products");
+      return products ? JSON.parse(products) : [];
+    }
+    return [];
+  });
 
   const handleSelectProduct = (product) => {
     setProductSelected(product);

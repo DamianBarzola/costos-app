@@ -16,11 +16,15 @@ import React, { useState } from "react";
 import { toast } from "sonner";
 
 const Templates = () => {
-  const [template, setTemplate] = useState(
-    localStorage.getItem("template")
-      ? JSON.parse(localStorage.getItem("template"))
-      : { revenue: 0, name: "", items: [] }
-  );
+  const [template, setTemplate] = useState(() => {
+    if (typeof window !== "undefined") {
+      const savedTemplate = localStorage.getItem("template");
+      return savedTemplate
+        ? JSON.parse(savedTemplate)
+        : { revenue: 0, name: "", items: [] };
+    }
+    return { revenue: 0, name: "", items: [] };
+  });
   const [newCategory, setNewCategory] = useState(ELEMENT_TYPES.SELECT);
   const handleChangeTemplateInfo = (e) => {
     setTemplate({ ...template, [e.target.name]: e.target.value });
