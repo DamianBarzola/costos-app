@@ -156,6 +156,13 @@ export default function Home() {
     setInfo({ ...info, [e.target.name]: e.target.value });
   };
 
+  const total = data
+    .reduce((acc, item) => Number(acc) + (Number(item.subtotal) ?? 0), 0)
+    .toFixed(2);
+
+  const revenueAmount = Number((total * revenue.current) / 100).toFixed(2);
+  const finalAmount = (Number(total) + Number(revenueAmount)).toFixed(2);
+
   const handleSave = () => {
     if (!info.name || !info.description) {
       toast.error("Por favor, llene todos los campos");
@@ -181,7 +188,7 @@ export default function Home() {
             data: data,
             revenue: revenueAmount,
             cost: total,
-            final: finalAmount,
+            total: finalAmount,
           },
         ])
       );
@@ -190,14 +197,6 @@ export default function Home() {
     setInfo({ name: "", description: "" });
     toast.success("Producto guardado con exito");
   };
-
-  const total = data
-    .reduce((acc, item) => Number(acc) + (Number(item.subtotal) ?? 0), 0)
-    .toFixed(2);
-
-  const revenueAmount = Number((total * revenue.current) / 100).toFixed(2);
-  const finalAmount = (Number(total) + Number(revenueAmount)).toFixed(2);
-
   if (isLoading) {
     return <div>Loading...</div>;
   }
