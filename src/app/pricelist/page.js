@@ -1,6 +1,7 @@
 "use client";
 import { BOX_STYLES } from "@/consts";
-import { AccountCircle, Search } from "@mui/icons-material";
+import { getStoreData, setStoreData } from "@/services/localStorageService";
+import { Search } from "@mui/icons-material";
 import {
   Button,
   Box,
@@ -12,24 +13,36 @@ import {
   InputAdornment,
   TextField,
 } from "@mui/material";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 const PriceList = () => {
   const [search, setSearch] = useState("");
   const [infoDialog, setInfoDialog] = useState(false);
   const [productSelected, setProductSelected] = useState(null);
 
-  const [productList, setProductList] = useState(() => {
-    if (typeof window !== "undefined") {
-      const products = localStorage.getItem("products");
-      return products ? JSON.parse(products) : [];
-    }
-    return [];
-  });
+  const [productList, setProductList] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const storedData = await getStoreData("products", []);
+      if (storedData) setProductList(storedData);
+    };
+    fetchData();
+  }, []);
 
   const handleSelectProduct = (product) => {
     setProductSelected(product);
     setInfoDialog(true);
+  };
+
+  const deleteProduct = async () => {
+    const _productList = productList.filter((p) => p.id !== productSelected.id);
+    await setStoreData("products", _productList);
+
+    setProductList(_productList);
+
+    setInfoDialog(false);
+    setProductSelected(null);
   };
 
   const filteredProducts = productList.filter((product) => {
@@ -126,6 +139,9 @@ const PriceList = () => {
           </div>
         </DialogContent>
         <DialogActions>
+          <Button color="error" onClick={deleteProduct}>
+            Eliminar Producto
+          </Button>
           <Button onClick={() => setInfoDialog(false)}>Cerrar</Button>
         </DialogActions>
       </Dialog>

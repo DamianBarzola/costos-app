@@ -4,6 +4,7 @@ import { BOX_STYLES, ELEMENT_TYPES } from "@/consts";
 import { useEffect, useRef } from "react";
 import { useState } from "react";
 import { toast } from "sonner";
+import { getStoreData, setStoreData } from "@/services/localStorageService";
 
 function RowField({ rowData, handleSelect, handleChange }) {
   return (
@@ -72,34 +73,31 @@ function RowField({ rowData, handleSelect, handleChange }) {
 export default function Home() {
   const [isLoading, setIsLoading] = useState(false);
   const [data, setData] = useState([]);
-  const [template, setTemplate] = useState(() => {
-    if (typeof window !== "undefined") {
-      const savedTemplate = localStorage.getItem("template");
-      return savedTemplate
-        ? JSON.parse(savedTemplate)
-        : {
-            revenue: 0,
-            name: "",
-            items: [],
-          };
-    }
-    return {
-      revenue: 0,
-      name: "",
-      items: [],
-    };
+  const [template, setTemplate] = useState({
+    revenue: 0,
+    name: "",
+    items: [],
   });
   const [info, setInfo] = useState({ name: "", description: "" });
   const revenue = useRef(40);
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      const savedTemplate = localStorage.getItem("template");
-      revenue.current = savedTemplate
-        ? Number(JSON.parse(savedTemplate).revenue)
-        : 40;
-    }
+    const fetchData = async () => {
+      const storedData = await getStoreData("template", []);
+      if (storedData) {
+        setTemplate(storedData);
+        revenue.current = Number(storedData.revenue);
+      }
+    };
+
+    fetchData();
   }, []);
+
+  useEffect(() => {
+    setIsLoading(true);
+    initializeData(template);
+  }, [template]);
+
   const initializeData = (template) => {
     let mappedSubtotal = template.items.map((item) => {
       if (item.type === ELEMENT_TYPES.SELECT) {
@@ -120,11 +118,6 @@ export default function Home() {
     setData(mappedSubtotal);
     setIsLoading(false);
   };
-
-  useEffect(() => {
-    setIsLoading(true);
-    initializeData(template);
-  }, [template]);
 
   const handleSelect = (e, index) => {
     const value = Number(e.target.value);
@@ -163,35 +156,34 @@ export default function Home() {
   const revenueAmount = Number((total * revenue.current) / 100).toFixed(2);
   const finalAmount = (Number(total) + Number(revenueAmount)).toFixed(2);
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!info.name || !info.description) {
       toast.error("Por favor, llene todos los campos");
       return;
     }
-    let list = localStorage.getItem("products");
+    let list = await getStoreData("products");
     if (list) {
       list = JSON.parse(list);
       list.push({
         ...info,
+        id: Date.now(),
         data: data,
         revenue: revenueAmount,
         cost: total,
         total: finalAmount,
       });
-      localStorage.setItem("products", JSON.stringify(list));
+      await setStoreData("products", list);
     } else {
-      localStorage.setItem(
-        "products",
-        JSON.stringify([
-          {
-            ...info,
-            data: data,
-            revenue: revenueAmount,
-            cost: total,
-            total: finalAmount,
-          },
-        ])
-      );
+      await setStoreData("products", [
+        {
+          ...info,
+          id: Date.now(),
+          data: data,
+          revenue: revenueAmount,
+          cost: total,
+          total: finalAmount,
+        },
+      ]);
     }
     initializeData(template);
     setInfo({ name: "", description: "" });

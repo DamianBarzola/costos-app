@@ -1,31 +1,32 @@
 "use client";
 import { BOX_STYLES, ELEMENT_TYPES } from "@/consts";
+import { getStoreData } from "@/services/localStorageService";
 import { Add, Delete } from "@mui/icons-material";
 import {
   Box,
   Button,
   FormControl,
   IconButton,
-  InputAdornment,
   InputLabel,
   MenuItem,
   Select,
   TextField,
 } from "@mui/material";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 const Templates = () => {
-  const [template, setTemplate] = useState(() => {
-    if (typeof window !== "undefined") {
-      const savedTemplate = localStorage.getItem("template");
-      return savedTemplate
-        ? JSON.parse(savedTemplate)
-        : { revenue: 0, name: "", items: [] };
-    }
-    return { revenue: 0, name: "", items: [] };
-  });
+  const [template, setTemplate] = useState({ revenue: 0, name: "", items: [] });
   const [newCategory, setNewCategory] = useState(ELEMENT_TYPES.SELECT);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const storedData = await getStoreData("template", []);
+      if (storedData) setTemplate(storedData);
+    };
+    fetchData();
+  }, []);
+
   const handleChangeTemplateInfo = (e) => {
     setTemplate({ ...template, [e.target.name]: e.target.value });
   };
@@ -103,7 +104,7 @@ const Templates = () => {
     setNewCategory(ELEMENT_TYPES.SELECT);
   };
 
-  const handleSaveTemplate = () => {
+  const handleSaveTemplate = async () => {
     let _template = { ...template };
     _template.id = Date.now();
     let errors = [];
@@ -135,7 +136,7 @@ const Templates = () => {
       toast.error("Por favor, llene todos los campos");
       return;
     }
-    localStorage.setItem("template", JSON.stringify(template));
+    await setStoreData("template", _template);
 
     toast.success("Plantilla guardada");
   };
