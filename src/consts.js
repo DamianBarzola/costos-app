@@ -14,3 +14,12 @@ export const BOX_STYLES = {
   borderRadius: "5px",
   border: "1px solid #d7d7d7",
 };
+
+export const SORT_OPTIONS = {
+  ASC: "asc",
+  DESC: "desc",
+};
+export const SORT_COLUMNS = {
+  PRODUCT: "name",
+  PRICE: "total",
+};

@@ -162,8 +162,8 @@ export default function Home() {
       return;
     }
     let list = await getStoreData("products");
-    if (list) {
-      list = JSON.parse(list);
+    console.log(list);
+    if (list && list?.length) {
       list.push({
         ...info,
         id: Date.now(),
