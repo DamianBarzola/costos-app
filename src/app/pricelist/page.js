@@ -21,7 +21,10 @@ const PriceList = () => {
 
   const [productList, setProductList] = useState([]);
 
-  const [sortConfig, setSortConfig] = useState({ key: null, direction: "asc" });
+  const [sortConfig, setSortConfig] = useState({
+    key: null,
+    direction: SORT_OPTIONS.DESC,
+  });
 
   useEffect(() => {
     const fetchData = async () => {
