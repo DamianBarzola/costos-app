@@ -1,6 +1,7 @@
 "use client";
 import { BOX_STYLES, ELEMENT_TYPES } from "@/consts";
-import { getStoreData } from "@/services/localStorageService";
+import { DATA_EXAMPLE } from "@/mock";
+import { getStoreData, setStoreData } from "@/services/localStorageService";
 import { Add, Delete } from "@mui/icons-material";
 import {
   Box,
@@ -104,6 +105,10 @@ const Templates = () => {
     setNewCategory(ELEMENT_TYPES.SELECT);
   };
 
+  const handleSetExampleTemplate = async () => {
+    setTemplate(DATA_EXAMPLE);
+  };
+
   const handleSaveTemplate = async () => {
     let _template = { ...template };
     _template.id = Date.now();
@@ -142,8 +147,17 @@ const Templates = () => {
   };
   return (
     <Box component="form" noValidate autoComplete="off" sx={BOX_STYLES}>
-      <h1 className="text-2xl text-center my-2">
+      <h1 className="text-2xl text-center my-2 relative">
         <b> Plantilla </b>
+        <Button
+          variant="outlined"
+          color="primary"
+          onClick={handleSetExampleTemplate}
+          size="small"
+          className="absolute right-0 text-capitalize"
+        >
+          <span> Ejemplo </span>
+        </Button>
       </h1>
       <div className="flex flex-col gap-y-4 w-full template-row">
         <TextField

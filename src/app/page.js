@@ -5,6 +5,8 @@ import { useEffect, useRef } from "react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { getStoreData, setStoreData } from "@/services/localStorageService";
+import SdCardAlertIcon from "@mui/icons-material/SdCardAlert";
+import { List } from "@mui/icons-material";
 
 function RowField({ rowData, handleSelect, handleChange }) {
   return (
@@ -193,6 +195,28 @@ export default function Home() {
     return <div>Loading...</div>;
   }
 
+  if (!data.length) {
+    return (
+      <Box component="form" noValidate autoComplete="off" sx={BOX_STYLES}>
+        <h1 className="text-2xl text-center my-2">
+          <b> Calcular costo</b>
+        </h1>
+        <div className="w-full template-row">
+          <div className="flex flex-col gap-y-4 py-10 justify-center items-center">
+            <SdCardAlertIcon style={{ fontSize: "50px" }} />
+            <p className="text-center text-sm">
+              Parece que no hay ninguna plantilla creada.
+            </p>
+            <div className="text-center">
+              <a href="/template">
+                <List /> Ir a plantillas
+              </a>
+            </div>
+          </div>
+        </div>
+      </Box>
+    );
+  }
   return (
     <Box component="form" noValidate autoComplete="off" sx={BOX_STYLES}>
       <h1 className="text-2xl text-center my-2">

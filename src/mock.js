@@ -53,3 +53,30 @@ export const DATA = {
     },
   ],
 };
+
+export const DATA_EXAMPLE = {
+  name: "Plantilla de ejemplo",
+  revenue: 50,
+  items: [
+    {
+      id: 1,
+      label: "Categoría 1",
+      type: ELEMENT_TYPES.SELECT,
+      options: [
+        { id: 1, label: "Opción 1", price: 500 },
+        { id: 2, label: "Opción 2", price: 500 },
+      ],
+    },
+    {
+      id: 2,
+      label: "Categoría 2",
+      type: ELEMENT_TYPES.QUANTITY,
+      price: 150,
+    },
+    {
+      id: 3,
+      label: "Categoría 3",
+      type: ELEMENT_TYPES.PRICE,
+    },
+  ],
+};
