@@ -381,7 +381,7 @@ const Templates = () => {
 
         <Button
           variant="contained"
-          color="info"
+          color="secondary"
           startIcon={<Add />}
           onClick={() => handleAddTemplate()}
         >

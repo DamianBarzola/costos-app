@@ -30,18 +30,23 @@ export const metadata = {
   ],
 };
 
+import { ThemeProvider as MUIThemeProvider } from "@mui/material/styles";
+import { theme } from "@/theme/theme";
+
 export default function RootLayout({ children }) {
   return (
     <html lang="es">
       <body className={poppins.className}>
-        <div className="flex justify-center min-h-screen">
-          <main className="w-full max-w-[750px] px-2 sm:px-6 lg:px-8">
-            <Toaster position="top-center" />
-            <Header />
-            <div className="mb-36  relative top-14">{children}</div>
-            <Navigator />
-          </main>
-        </div>
+        <MUIThemeProvider theme={theme}>
+          <div className="flex justify-center min-h-screen">
+            <main className="w-full max-w-[750px] px-2 sm:px-6 lg:px-8">
+              <Toaster position="top-center" />
+              <Header />
+              <div className="mb-36  relative top-14">{children}</div>
+              <Navigator />
+            </main>
+          </div>
+        </MUIThemeProvider>
       </body>
     </html>
   );
